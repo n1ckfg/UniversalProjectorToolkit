@@ -10,7 +10,7 @@ void setupGui() {
   cp5 = new ControlP5(this);
   cp5.setFont(createFont("Courier", 16));
   
-  guiPos = new PVector(kinect.depthWidth()+90, 60);
+  guiPos = new PVector(depthWidth+90, 60);
   
   guiCpos = cp5.addSlider2D("chessPosition")
       .setLabel("Chessboard Position")

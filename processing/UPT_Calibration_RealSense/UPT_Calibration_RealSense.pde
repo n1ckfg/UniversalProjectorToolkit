@@ -9,16 +9,14 @@ String calibFilename = "calibration.txt";
 //==========================================================
 
 import javax.swing.JFrame;
-import SimpleOpenNI.*;
+//import SimpleOpenNI.*;
 import gab.opencv.*;
 import controlP5.*;
 import Jama.*;
 
-SimpleOpenNI kinect;
 OpenCV opencv;
 ChessboardFrame frameBoard;
 ChessboardApplet ca;
-PVector[] depthMap;
 PImage src;
 ArrayList<PVector> foundPoints = new ArrayList<PVector>();
 ArrayList<PVector> projPoints = new ArrayList<PVector>();
@@ -36,13 +34,9 @@ void setup() {
   frameBoard = new ChessboardFrame();
 
   // set up kinect 
-  kinect = new SimpleOpenNI(this);
-  kinect.setMirror(false);
-  kinect.enableDepth();
-  //kinect.kinect.enableIR();
-  kinect.enableRGB();
-  kinect.alternativeViewPointDepthToImage();
-  opencv = new OpenCV(this, kinect.depthWidth(), kinect.depthHeight());
+  setupRealSense();
+  
+  opencv = new OpenCV(this, depthWidth, depthHeight);
 
   // matching pairs
   ptsK = new ArrayList<PVector>();
@@ -57,14 +51,14 @@ void draw() {
   projPoints = drawChessboard(cx, cy, cwidth);
 
   // update kinect and look for chessboard
-  kinect.update();
-  depthMap = kinect.depthMapRealWorld();
-  opencv.loadImage(kinect.rgbImage());
+  kinect.readFrames();
+  depthMap = depthMapRealWorld(); //kinect.depthMapRealWorld();
+  opencv.loadImage(kinect.getColorImage());
   //opencv.loadImage(kinect.irImage());
   opencv.gray();
 
   if (isSearchingBoard) foundPoints = opencv.findChessboardCorners(4, 3);
-
+  
   drawGui();
 }
 
@@ -76,7 +70,7 @@ void drawGui() {
   translate(30, 120);
   textSize(22);
   fill(255);
-  image(kinect.rgbImage(), 0, 0);
+  image(kinect.getColorImage(), 0, 0);
   
   // draw chessboard corners, if found
   if (isSearchingBoard) {
@@ -107,7 +101,7 @@ void drawGui() {
   // draw GUI
   pushMatrix();
   pushStyle();
-  translate(kinect.depthWidth()+70, 40); // this is black box
+  translate(depthWidth+70, 40); // this is black box
   fill(0);
   rect(0, 0, 450, 680); // blackbox size
   fill(255);
@@ -136,7 +130,7 @@ void addPointPair() {
 }
 
 PVector getDepthMapAt(int x, int y) {
-  PVector dm = depthMap[kinect.depthWidth() * y + x];
+  PVector dm = depthMap[depthWidth * y + x];
   
   return new PVector(dm.x, dm.y, dm.z);
 }
@@ -156,43 +150,3 @@ void loadC() {
   loadCalibration(calibFilename);
   guiTesting.addItem("Testing Mode", 1);
 }
-
-// override functions below used to generate depthMapRealWorld point cloud
-/*
-PVector[] depthMapRealWorld()
-{
-  int[] depth = kinect.getRawDepth();
-  int skip = 1;
-  for (int y = 0; y < kinect.depthHeight(); y+=skip) {
-    for (int x = 0; x < kinect.depthWidth(); x+=skip) {
-        int offset = x + y * kinect.depthWidth();
-        //calculate the x, y, z camera position based on the depth information
-        PVector point = depthToPointCloudPos(x, y, depth[offset]);
-        depthMap[kinect.depthWidth() * y + x] = point;
-      }
-    }
-    return depthMap;
-}
-
-//calculte the xyz camera position based on the depth data
-PVector depthToPointCloudPos(int x, int y, float depthValue) {
-  PVector point = new PVector();
-  point.z = (depthValue);// / (1.0f); // Convert from mm to meters
-  point.x = ((x - CameraParams.cx) * point.z / CameraParams.fx);
-  point.y = ((y - CameraParams.cy) * point.z / CameraParams.fy);
-  return point;
-}
-
-//camera information based on the Kinect v2 hardware
-static class CameraParams {
-  static float cx = 254.878f;
-  static float cy = 205.395f;
-  static float fx = 365.456f;
-  static float fy = 365.456f;
-  static float k1 = 0.0905474;
-  static float k2 = -0.26819;
-  static float k3 = 0.0950862;
-  static float p1 = 0.0;
-  static float p2 = 0.0;
-}
-*/

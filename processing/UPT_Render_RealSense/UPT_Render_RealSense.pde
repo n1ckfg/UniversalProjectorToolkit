@@ -3,7 +3,7 @@ import SimpleOpenNI.*;
 import KinectProjectorToolkit.*;
 import controlP5.*;
 
-SimpleOpenNI kinect;
+//SimpleOpenNI kinect;
 OpenCV opencv;
 KinectProjectorToolkit kpc;
 ControlP5 cp5;
@@ -21,18 +21,20 @@ void setup()
   size(1280, 720, P2D); 
 
   // setup Kinect
-  kinect = new SimpleOpenNI(this); 
-  kinect.enableDepth();
-  kinect.enableUser();
-  kinect.alternativeViewPointDepthToImage();
-  
+  setupRealSense();
+  //kinect = new RealSenseCamera(this); //SimpleOpenNI(this); 
+  //kinect.enableDepthStream();
+  //kinect.enableUser();
+  //kinect.alternativeViewPointDepthToImage();
+  //kinect.enableAlign();
+ 
   // setup OpenCV
-  opencv = new OpenCV(this, kinect.depthWidth(), kinect.depthHeight());
+  opencv = new OpenCV(this, kinect.getDepthImage().width, kinect.getDepthImage().height);
   //opencv = new OpenCV(this, 640, 480);
 
   // setup Kinect Projector Toolkit
   //kpc = new KinectProjectorToolkit(this, 640, 480);
-  kpc = new KinectProjectorToolkit(this, kinect.depthWidth(), kinect.depthHeight());// kinect.depthWidth(), kinect.depthHeight());
+  kpc = new KinectProjectorToolkit(this, kinect.getDepthImage().width, kinect.getDepthImage().height);// kinect.getDepthImage().width, kinect.getDepthImage().height);
   kpc.loadCalibration("calibration.txt");
   kpc.setContourSmoothness(3);  
   
