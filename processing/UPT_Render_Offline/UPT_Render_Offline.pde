@@ -16,7 +16,7 @@ int ribbonSpawnRate, ribbonMaxAge, ribbonLength, ribbonSpeed, ribbonSkip, ribbon
 int samplingMode, idxShader, numframes, idxBg;
 
 void setup() {
-  size(1280, 720, P2D); 
+  fullScreen(P2D); 
 
   // setup Kinect
   kinect = new OfflineKinect(); 
