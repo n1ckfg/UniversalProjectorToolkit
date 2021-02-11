@@ -1,8 +1,8 @@
 //==========================================================
 // set resolution of your projector image/second monitor
 // and name of your calibration file-to-be
-int pWidth = 1280;
-int pHeight = 720; 
+int pWidth = 1920;//1280;
+int pHeight = 1080;//720; 
 String calibFilename = "calibration.txt";
 
 //==========================================================
@@ -54,6 +54,15 @@ void setup() {
 
 void draw() {
   // draw chessboard onto scene
+  if (moveVertical) {
+    cy += moveStep;
+    if (cy > pHeight) cy = 0;
+  } else {
+    cx += moveStep;
+    if (cx > pWidth) cx = 0;
+  }
+  cx = constrain(cx, 0, pWidth);
+  cy = constrain(cy, 0, pHeight);
   projPoints = drawChessboard(cx, cy, cwidth);
 
   // update kinect and look for chessboard

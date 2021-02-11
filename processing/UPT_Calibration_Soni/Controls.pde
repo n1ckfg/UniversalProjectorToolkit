@@ -1,6 +1,11 @@
+boolean moveVertical = false;
+int moveStep = 5;
+
 void keyPressed() {
-  if (keyCode == 33 || keyCode == 34) {
-    //
+  if (keyCode == 33) {
+    addPointPair();
+  } else if (keyCode == 34) {
+    moveVertical = !moveVertical;
   }
 }
 
