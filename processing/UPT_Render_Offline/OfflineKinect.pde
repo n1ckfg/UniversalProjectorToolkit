@@ -2,14 +2,11 @@ class OfflineKinect {
   
   int dW, dH;
   PImage depthImg, contourImg;
+  String[] depthText;
   PVector[] depthMap;
   
-  OfflineKinect(PImage _depthImg, PImage _contourImg) {
-    dW = _depthImg.width;
-    dH = _depthImg.height;     
-    depthMap = new PVector[_depthImg.pixels.length];
-    
-    update(_depthImg, _contourImg);
+  OfflineKinect() {
+    //
   }
   
   int depthWidth() {
@@ -24,34 +21,26 @@ class OfflineKinect {
     return contourImg;
   }
  
-  void update(PImage _depthImg, PImage _contourImg) {
+  void update(String[] _depthText, PImage _depthImg, PImage _contourImg) {
+    depthText = _depthText;
     depthImg = _depthImg;   
     contourImg = _contourImg;
     
-    // TODO calculate real world depth map    
+    dW = depthImg.width;
+    dH = depthImg.height;     
+    depthMap = new PVector[depthText.length];
+    
+    for (int i=0; i<depthMap.length; i++) {
+      String[] s = depthText[i].split(",");
+      float x = float(s[0]);
+      float y = float(s[1]);
+      float z = float(s[2]);
+      depthMap[i] = new PVector(x, y, z);
+    }    
   }
 
   PVector[] depthMapRealWorld() {
-    int[] depth = kinect.getRawDepth();
-    int skip = 1;
-    for (int y = 0; y < kinect.depthHeight(); y+=skip) {
-      for (int x = 0; x < kinect.depthWidth(); x+=skip) {
-          int offset = x + y * kinect.depthWidth();
-          //calculate the x, y, z camera position based on the depth information
-          PVector point = depthToPointCloudPos(x, y, depth[offset]);
-          depthMap[kinect.depthWidth() * y + x] = point;
-        }
-      }
       return depthMap;
   }
   
-  //calculte the xyz camera position based on the depth data
-  PVector depthToPointCloudPos(int x, int y, float depthValue) {
-    PVector point = new PVector();
-    point.z = (depthValue);// / (1.0f); // Convert from mm to meters
-    point.x = ((x - CameraParams.cx) * point.z / CameraParams.fx);
-    point.y = ((y - CameraParams.cy) * point.z / CameraParams.fy);
-    return point;
-  }
-
 }

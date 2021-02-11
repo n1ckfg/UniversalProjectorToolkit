@@ -15,14 +15,12 @@ float blobDilate, ribbonNoiseFactor, ribbonThickness;
 int ribbonSpawnRate, ribbonMaxAge, ribbonLength, ribbonSpeed, ribbonSkip, ribbonMargin, ribbonAlpha;
 int samplingMode, idxShader, numframes, idxBg;
 
-PImage depthImg, contourImg;
-
-void setup()
-{
+void setup() {
   size(1280, 720, P2D); 
 
   // setup Kinect
-  kinect = new OfflineKinect(depthImg, contourImg); 
+  kinect = new OfflineKinect(); 
+  kinect.update(loadStrings("sample/depth_map.txt"), loadImage("sample/depth_image.png"), loadImage("sample/user_image.png"));
   
   // setup OpenCV
   opencv = new OpenCV(this, kinect.depthWidth(), kinect.depthHeight());
@@ -50,62 +48,56 @@ void setup()
 }
 
 void setupShader(int idxShader) {
-  if      (idxShader == 0)  
+  if (idxShader == 0) { 
     shade = loadShader("blobby.glsl");
-  else if (idxShader == 1) {
+  } else if (idxShader == 1) {
     shade = loadShader("drip.glsl");
     shade.set("intense", 0.5);
     shade.set("speed", 3.0);
     shade.set("c", 0.5, 1.0);
-  }
-  else if (idxShader == 2)  
+  } else if (idxShader == 2) {
     shade = loadShader("waterNoise.glsl");
-  else if (idxShader == 3)  
+  } else if (idxShader == 3) {
     shade = loadShader("waves.glsl");
+  }
   shade.set("resolution", float(pg.width), float(pg.height));
   pg.shader(shade);
 }
 
 void setupBackground(int idxBg) {
-  if      (idxBg == 0) {
+  if (idxBg == 0) {
     bg.beginDraw();
     bg.background(0);
     bg.endDraw();
     bg.resetShader();
-  }
-  else if (idxBg == 1) {
+  } else if (idxBg == 1) {
     bg.beginDraw();
     bg.background(255);
     bg.endDraw();
     bg.resetShader();
-  }
-  else if (idxBg == 2) {
+  } else if (idxBg == 2) {
     bgshade = loadShader("blobby.glsl");
     bgshade.set("resolution", float(bg.width), float(bg.height));
     bg.shader(bgshade);
-  }
-  else if (idxBg == 3) {
+  } else if (idxBg == 3) {
     bgshade = loadShader("drip.glsl");
     bgshade.set("intense", 0.5);
     bgshade.set("speed", 3.0);
     bgshade.set("c", 0.5, 1.0);
     bgshade.set("resolution", float(bg.width), float(bg.height));
     bg.shader(bgshade);
-  }
-  else if (idxBg == 4) {
+  } else if (idxBg == 4) {
     bgshade = loadShader("waterNoise.glsl");
     bgshade.set("resolution", float(bg.width), float(bg.height));
     bg.shader(bgshade);
-  }
-  else if (idxBg == 5) {
+  } else if (idxBg == 5) {
     bgshade = loadShader("waves.glsl");
     bgshade.set("resolution", float(bg.width), float(bg.height));
     bg.shader(bgshade);
   }
 }
 
-void draw()
-{  
+void draw() {  
   kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
   kpc.setKinectUserImage(kinect.userImage());
   opencv.loadImage(kpc.getImage());

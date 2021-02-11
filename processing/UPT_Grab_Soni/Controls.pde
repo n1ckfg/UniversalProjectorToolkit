@@ -1,3 +1,5 @@
+boolean doTimestamp = false;
+
 void keyPressed() {
   if (key == ' ') {
     int timestamp = millis();
@@ -9,10 +11,15 @@ void keyPressed() {
       PVector p = depthMap[i];
       depthText[i] = p.x + ", " + p.y + ", " + p.z;
     }
-    saveStrings("render/depth_map_" + timestamp + ".txt", depthText);
     
-    // images
-    depthImage.save("render/depth_image.png");
-    userImage.save("render/user_image.png");
+    if (doTimestamp) {
+      saveStrings("render/depth_map_" + timestamp + ".txt", depthText);
+      depthImage.save("render/depth_image_" + timestamp + ".png");
+      userImage.save("render/user_image_" + timestamp + ".png");
+    } else {
+      saveStrings("render/depth_map.txt", depthText);
+      depthImage.save("render/depth_image.png");
+      userImage.save("render/user_image.png");
+    }
   }
 }
