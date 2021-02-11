@@ -110,8 +110,8 @@ void setupBackground(int idxBg) {
 
 void draw()
 {  
-  kinect.update();  
-  kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
+  kinect.readFrames();  
+  kpc.setDepthMapRealWorld(depthMapRealWorld()); 
   kpc.setKinectUserImage(kinect.userImage());
   opencv.loadImage(kpc.getImage());
   
