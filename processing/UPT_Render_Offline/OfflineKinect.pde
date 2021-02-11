@@ -2,11 +2,12 @@ class OfflineKinect {
   
   int dW, dH;
   PImage depthImg, contourImg;
-  String[] depthText;
+  PGraphics contourGfx;
   PVector[] depthMap;
+  PShader threshold_shader;
   
   OfflineKinect() {
-    //
+    threshold_shader = loadShader("threshold_user.glsl");
   }
   
   int depthWidth() {
@@ -16,31 +17,63 @@ class OfflineKinect {
   int depthHeight() {
     return dH;
   }
-  
-  PImage userImage() {
-    return contourImg;
-  }
- 
+   
   void update(String[] _depthText, PImage _depthImg, PImage _contourImg) {
-    depthText = _depthText;
-    depthImg = _depthImg;   
+    updateDepthMap(_depthText);   
+    updateDepthImg(_depthImg);
+    updateContourImg(_contourImg);
+  }
+
+  void update(String[] _depthText, PImage _depthImg, float _threshold) {
+    updateDepthMap(_depthText);   
+    updateDepthImg(_depthImg);
+    updateContourImg(_threshold);
+  }
+  
+  void update(float _threshold) {
+    updateContourImg(_threshold);
+  }
+
+  void updateContourImg(float _threshold) {
+    threshold_shader.set("tex0", depthImg);
+    threshold_shader.set("threshold", _threshold);
+    
+    contourGfx.beginDraw();
+    contourGfx.background(255,0,0);
+    contourGfx.filter(threshold_shader);
+    contourGfx.endDraw();
+    
+    contourImg = contourGfx;
+  }
+  
+  void updateContourImg(PImage _contourImg) {
     contourImg = _contourImg;
-    
+  }
+  
+  void updateDepthImg(PImage _depthImg) {
+    depthImg = _depthImg;       
     dW = depthImg.width;
-    dH = depthImg.height;     
-    depthMap = new PVector[depthText.length];
-    
+    dH = depthImg.height;   
+    threshold_shader.set("iResolution", dW, dH, 1.0);
+    contourGfx = createGraphics(dW, dH, P2D);
+  }
+  
+  void updateDepthMap(String[] _depthText) {
+    depthMap = new PVector[_depthText.length];
     for (int i=0; i<depthMap.length; i++) {
-      String[] s = depthText[i].split(",");
+      String[] s = _depthText[i].split(",");
       float x = float(s[0]);
       float y = float(s[1]);
       float z = float(s[2]);
       depthMap[i] = new PVector(x, y, z);
-    }    
+    }
   }
 
   PVector[] depthMapRealWorld() {
       return depthMap;
   }
   
+  PImage userImage() {
+    return contourImg;
+  }
 }
