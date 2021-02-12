@@ -17,7 +17,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 	vec2 uv = fragCoord.xy / iResolution.xy;
 	vec2 uv2 = vec2(uv.x, abs(1.0 - uv.y));
 
-	vec4 col = threshFilter(texture2D(tex0, uv2).xyz);
+	vec4 col = threshFilter(texture2D(tex0, uv).xyz);
 
 	fragColor = col;
 }
