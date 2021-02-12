@@ -54,7 +54,7 @@ class KinectSoni {
   }
   
   int[] getRawDepth() {
-    return device.depthMap();
+    return depthMap();
   }
   
 }
