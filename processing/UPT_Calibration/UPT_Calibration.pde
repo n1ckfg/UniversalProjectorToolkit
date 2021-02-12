@@ -34,6 +34,7 @@ void setup() {
   frameBoard = new ChessboardFrame();
 
   // set up kinect 
+  kinect = new KinectWrapper(this);
   opencv = new OpenCV(this, kinect.depthWidth(), kinect.depthHeight());
 
   // matching pairs
