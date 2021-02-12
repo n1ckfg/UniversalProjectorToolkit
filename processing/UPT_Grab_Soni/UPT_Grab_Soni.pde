@@ -1,8 +1,6 @@
 import SimpleOpenNI.*;
 
 SimpleOpenNI kinect;
-PVector[] depthMap;
-PImage depthImage, userImage;
 
 void setup() {
   size(1280, 480, P2D);
@@ -20,9 +18,6 @@ void setup() {
 void draw() {
   kinect.update();
   
-  depthImage = kinect.depthImage();
-  userImage = kinect.userImage();
-  
-  if (depthImage != null) image(depthImage, 0, 0);
-  if (userImage != null) image(userImage, 640, 0);
+  image(kinect.depthImage(), 0, 0);
+  image(kinect.userImage(), 640, 0);
 }

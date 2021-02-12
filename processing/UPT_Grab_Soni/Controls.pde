@@ -2,10 +2,14 @@ boolean doTimestamp = false;
 
 void keyPressed() {
   if (key == ' ') {
+    dumpDepthInfo();
+  }
+}
+
+void dumpDepthInfo() {
     int timestamp = millis();
     
-    // depth map
-    depthMap = kinect.depthMapRealWorld();
+    PVector[] depthMap = kinect.depthMapRealWorld();
     String[] depthText = new String[depthMap.length];
     for (int i=0; i<depthMap.length; i++) {
       PVector p = depthMap[i];
@@ -14,12 +18,11 @@ void keyPressed() {
     
     if (doTimestamp) {
       saveStrings("render/depth_map_" + timestamp + ".txt", depthText);
-      depthImage.save("render/depth_image_" + timestamp + ".png");
-      userImage.save("render/user_image_" + timestamp + ".png");
+      kinect.depthImage().save("render/depth_image_" + timestamp + ".png");
+      //kinect.userImage().save("render/user_image_" + timestamp + ".png");
     } else {
       saveStrings("render/depth_map.txt", depthText);
-      depthImage.save("render/depth_image.png");
-      userImage.save("render/user_image.png");
+      kinect.depthImage().save("render/depth_image.png");
+      //kinect.userImage().save("render/user_image.png");
     }
-  }
 }
