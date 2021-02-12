@@ -39,7 +39,7 @@ void dumpDepthInfo() {
       //kinect.userImage().save("render/user_image_" + timestamp + ".png");
     } else {
       saveStrings("render/depth_map.txt", depthText);
-      kinect.depthImage().save("render/depth_image.png");
-      //kinect.userImage().save("render/user_image.png");
+      kinect.depthImage().save(sketchPath("render/depth_image.png"));
+      //kinect.userImage().save(sketchPath("render/user_image.png"));
     }
 }
