@@ -117,82 +117,90 @@ void setupBackground(int idxBg) {
   }
 }
 
-void draw() {  
-  if (!kinect.isOffline) kinect.update();  
-  kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
-  kpc.setKinectUserImage(kinect.userImage());
-  opencv.loadImage(kpc.getImage());
-  
-  // get projected contours
-  ArrayList<ProjectedContour> projectedContours = new ArrayList<ProjectedContour>();
-  
-  ArrayList<Contour> contours = opencv.findContours();
-  for (Contour contour : contours) {
-    if (contour.area() > 2000) {
-      ArrayList<PVector> cvContour = contour.getPoints();
-      ProjectedContour projectedContour = kpc.getProjectedContour(cvContour, blobDilate);
-      projectedContours.add(projectedContour);
-    }
-  }
-     
-  // add to running list of projected contours
-  allProjectedContours.add(projectedContours);
-  while (allProjectedContours.size() > numframes)  allProjectedContours.remove(0);
-  
-  // get current projected contours depending on strategy
-  int t = allProjectedContours.size()-1;
-  if (samplingMode == 1) {
-    t = (int) map(sin(0.01*frameCount), -1, 1, 0, allProjectedContours.size() - 1);
-  } else if (samplingMode == 2) {
-    t = (int) map(mouseX, 0, width, 0, allProjectedContours.size() - 1);
-  }
-  projectedContours = allProjectedContours.get(t);
-  
-  // draw background
-  if (idxBg > 1) {
-    bgshade.set("time", millis()/1000.0);
-    bg.beginDraw();
-    bg.rect(0, 0, bg.width, bg.height);
-    bg.endDraw();  
-  }
-  image(bg, 0, 0);
-  
-  // render bodies
-  if (renderBody) {
-    for (int i=0; i<projectedContours.size(); i++) {
-      shade.set("time", millis()/1000.0);
-      pg.beginDraw();
-      pg.rect(0, 0, pg.width, pg.height);
-      pg.endDraw();    
-      
-      ProjectedContour projectedContour = projectedContours.get(i);
-      beginShape();
-      texture(pg);
-      for (PVector p : projectedContour.getProjectedContours()) {
-        PVector pt = projectedContour.getTextureCoordinate(p);
-        vertex(p.x, p.y, pg.width * pt.x, pg.height * pt.y);
+void draw() { 
+  if (debugDraw && guiVisible) {
+    pushMatrix();
+    scale(1,-1);
+    translate(width/2, -kinect.contourImg.height);
+    image(kinect.contourImg, 0, 0);
+    popMatrix();
+  } else {
+    if (!kinect.isOffline) kinect.update();  
+    kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
+    kpc.setKinectUserImage(kinect.userImage());
+    opencv.loadImage(kpc.getImage());
+    
+    // get projected contours
+    ArrayList<ProjectedContour> projectedContours = new ArrayList<ProjectedContour>();
+    
+    ArrayList<Contour> contours = opencv.findContours();
+    for (Contour contour : contours) {
+      if (contour.area() > 2000) {
+        ArrayList<PVector> cvContour = contour.getPoints();
+        ProjectedContour projectedContour = kpc.getProjectedContour(cvContour, blobDilate);
+        projectedContours.add(projectedContour);
       }
-      endShape();
+    }
+       
+    // add to running list of projected contours
+    allProjectedContours.add(projectedContours);
+    while (allProjectedContours.size() > numframes)  allProjectedContours.remove(0);
+    
+    // get current projected contours depending on strategy
+    int t = allProjectedContours.size()-1;
+    if (samplingMode == 1) {
+      t = (int) map(sin(0.01*frameCount), -1, 1, 0, allProjectedContours.size() - 1);
+    } else if (samplingMode == 2) {
+      t = (int) map(mouseX, 0, width, 0, allProjectedContours.size() - 1);
+    }
+    projectedContours = allProjectedContours.get(t);
+    
+    // draw background
+    if (idxBg > 1) {
+      bgshade.set("time", millis()/1000.0);
+      bg.beginDraw();
+      bg.rect(0, 0, bg.width, bg.height);
+      bg.endDraw();  
+    }
+    image(bg, 0, 0);
+    
+    // render bodies
+    if (renderBody) {
+      for (int i=0; i<projectedContours.size(); i++) {
+        shade.set("time", millis()/1000.0);
+        pg.beginDraw();
+        pg.rect(0, 0, pg.width, pg.height);
+        pg.endDraw();    
+        
+        ProjectedContour projectedContour = projectedContours.get(i);
+        beginShape();
+        texture(pg);
+        for (PVector p : projectedContour.getProjectedContours()) {
+          PVector pt = projectedContour.getTextureCoordinate(p);
+          vertex(p.x, p.y, pg.width * pt.x, pg.height * pt.y);
+        }
+        endShape();
+      }
+    }
+    
+    // render ribbons
+    if (renderRibbons) {
+      if (projectedContours.size() > 0) addNewRibbons(t, ribbonSpawnRate);
+      ArrayList<Ribbon> nextRibbons = new ArrayList<Ribbon>();
+      for (Ribbon r : ribbons) {
+        r.update();
+        r.draw();
+        if (r.age < r.maxAge)  nextRibbons.add(r);
+      }
+      ribbons = nextRibbons;
+    } 
+  
+    // for gui
+    if (guiVisible) {
+      fill(0, 100);
+      rect(36, 24, 500, 640);
     }
   }
-  
-  // render ribbons
-  if (renderRibbons) {
-    if (projectedContours.size() > 0) addNewRibbons(t, ribbonSpawnRate);
-    ArrayList<Ribbon> nextRibbons = new ArrayList<Ribbon>();
-    for (Ribbon r : ribbons) {
-      r.update();
-      r.draw();
-      if (r.age < r.maxAge)  nextRibbons.add(r);
-    }
-    ribbons = nextRibbons;
-  } 
-
-  // for gui
-  if (guiVisible) {
-    fill(0, 100);
-    rect(36, 24, 500, 640);
-  }  
 }
 
 void addNewRibbons(int t, int n) {
