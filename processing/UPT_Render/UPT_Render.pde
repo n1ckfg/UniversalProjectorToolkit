@@ -25,6 +25,11 @@ void setup() {
   kinect.enableUser();
   kinect.alternativeViewPointDepthToImage();
   
+  if (kinect.isOffline) {
+    //kinect.update(loadStrings("sample/depth_map.txt"), loadImage("sample/depth_image.png"), loadImage("sample/user_image.png"));
+    kinect.update(loadStrings("sample/depth_map.txt"), loadImage("sample/depth_image.png"), threshold);
+  }
+  
   // setup OpenCV
   opencv = new OpenCV(this, kinect.depthWidth(), kinect.depthHeight());
   //opencv = new OpenCV(this, 640, 480);
@@ -113,7 +118,7 @@ void setupBackground(int idxBg) {
 }
 
 void draw() {  
-  kinect.update();  
+  if (!kinect.isOffline) kinect.update();  
   kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
   kpc.setKinectUserImage(kinect.userImage());
   opencv.loadImage(kpc.getImage());
