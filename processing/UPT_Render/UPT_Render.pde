@@ -16,8 +16,7 @@ float blobDilate, ribbonNoiseFactor, ribbonThickness;
 int ribbonSpawnRate, ribbonMaxAge, ribbonLength, ribbonSpeed, ribbonSkip, ribbonMargin, ribbonAlpha;
 int samplingMode, idxShader, numframes, idxBg;
 
-void setup()
-{
+void setup() {
   size(1280, 720, P2D); 
 
   // setup Kinect
@@ -52,62 +51,68 @@ void setup()
 }
 
 void setupShader(int idxShader) {
-  if      (idxShader == 0)  
-    shade = loadShader("blobby.glsl");
-  else if (idxShader == 1) {
-    shade = loadShader("drip.glsl");
-    shade.set("intense", 0.5);
-    shade.set("speed", 3.0);
-    shade.set("c", 0.5, 1.0);
+  switch (idxShader) {
+    case 0: 
+      shade = loadShader("blobby.glsl");
+      break;
+    case 1:
+      shade = loadShader("drip.glsl");
+      shade.set("intense", 0.5);
+      shade.set("speed", 3.0);
+      shade.set("c", 0.5, 1.0);
+      break;
+    case 2:
+      shade = loadShader("waterNoise.glsl");
+      break;
+    case 3: 
+      shade = loadShader("waves.glsl");
+      break;
   }
-  else if (idxShader == 2)  
-    shade = loadShader("waterNoise.glsl");
-  else if (idxShader == 3)  
-    shade = loadShader("waves.glsl");
   shade.set("resolution", float(pg.width), float(pg.height));
   pg.shader(shade);
 }
 
 void setupBackground(int idxBg) {
-  if      (idxBg == 0) {
-    bg.beginDraw();
-    bg.background(0);
-    bg.endDraw();
-    bg.resetShader();
-  }
-  else if (idxBg == 1) {
-    bg.beginDraw();
-    bg.background(255);
-    bg.endDraw();
-    bg.resetShader();
-  }
-  else if (idxBg == 2) {
-    bgshade = loadShader("blobby.glsl");
-    bgshade.set("resolution", float(bg.width), float(bg.height));
-    bg.shader(bgshade);
-  }
-  else if (idxBg == 3) {
-    bgshade = loadShader("drip.glsl");
-    bgshade.set("intense", 0.5);
-    bgshade.set("speed", 3.0);
-    bgshade.set("c", 0.5, 1.0);
-    bgshade.set("resolution", float(bg.width), float(bg.height));
-    bg.shader(bgshade);
-  }
-  else if (idxBg == 4) {
-    bgshade = loadShader("waterNoise.glsl");
-    bgshade.set("resolution", float(bg.width), float(bg.height));
-    bg.shader(bgshade);
-  }
-  else if (idxBg == 5) {
-    bgshade = loadShader("waves.glsl");
-    bgshade.set("resolution", float(bg.width), float(bg.height));
-    bg.shader(bgshade);
+  switch (idxBg) {
+    case 0:
+      bg.beginDraw();
+      bg.background(0);
+      bg.endDraw();
+      bg.resetShader();
+      break;
+    case 1:
+      bg.beginDraw();
+      bg.background(255);
+      bg.endDraw();
+      bg.resetShader();
+      break;
+    case 2:
+      bgshade = loadShader("blobby.glsl");
+      bgshade.set("resolution", float(bg.width), float(bg.height));
+      bg.shader(bgshade);
+      break;
+    case 3:
+      bgshade = loadShader("drip.glsl");
+      bgshade.set("intense", 0.5);
+      bgshade.set("speed", 3.0);
+      bgshade.set("c", 0.5, 1.0);
+      bgshade.set("resolution", float(bg.width), float(bg.height));
+      bg.shader(bgshade);
+      break;
+    case 4:
+      bgshade = loadShader("waterNoise.glsl");
+      bgshade.set("resolution", float(bg.width), float(bg.height));
+      bg.shader(bgshade);
+      break;
+    case 5:
+      bgshade = loadShader("waves.glsl");
+      bgshade.set("resolution", float(bg.width), float(bg.height));
+      bg.shader(bgshade);
+      break;
   }
 }
 
-void draw()
-{  
+void draw() {  
   kinect.update();  
   kpc.setDepthMapRealWorld(kinect.depthMapRealWorld()); 
   kpc.setKinectUserImage(kinect.userImage());
@@ -131,10 +136,11 @@ void draw()
   
   // get current projected contours depending on strategy
   int t = allProjectedContours.size()-1;
-  if (samplingMode == 1)
+  if (samplingMode == 1) {
     t = (int) map(sin(0.01*frameCount), -1, 1, 0, allProjectedContours.size() - 1);
-  else if (samplingMode == 2)
+  } else if (samplingMode == 2) {
     t = (int) map(mouseX, 0, width, 0, allProjectedContours.size() - 1);
+  }
   projectedContours = allProjectedContours.get(t);
   
   // draw background
@@ -146,16 +152,13 @@ void draw()
   }
   image(bg, 0, 0);
   
-  
   // render bodies
   if (renderBody) {
     for (int i=0; i<projectedContours.size(); i++) {
-      
       shade.set("time", millis()/1000.0);
       pg.beginDraw();
       pg.rect(0, 0, pg.width, pg.height);
       pg.endDraw();    
-    
       
       ProjectedContour projectedContour = projectedContours.get(i);
       beginShape();
@@ -170,7 +173,7 @@ void draw()
   
   // render ribbons
   if (renderRibbons) {
-    if (projectedContours.size() > 0)  addNewRibbons(t, ribbonSpawnRate);
+    if (projectedContours.size() > 0) addNewRibbons(t, ribbonSpawnRate);
     ArrayList<Ribbon> nextRibbons = new ArrayList<Ribbon>();
     for (Ribbon r : ribbons) {
       r.update();
@@ -194,18 +197,5 @@ void addNewRibbons(int t, int n) {
     ArrayList<PVector> contourPoints = projectedContours.get(p).getProjectedContours();
     Ribbon newRibbon = new Ribbon(contourPoints);
     ribbons.add(newRibbon); 
-  }
-}
-
-void keyPressed() {
-  if (key=='g') {
-    if (cp5.isVisible()) {
-      cp5.hide();
-      guiVisible = false;
-    }
-    else {
-      cp5.show();
-      guiVisible = true;
-    }
   }
 }
