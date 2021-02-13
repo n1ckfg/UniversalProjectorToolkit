@@ -3,7 +3,7 @@ import SimpleOpenNI.*;
 import KinectProjectorToolkit.*;
 import controlP5.*;
 
-SimpleOpenNI kinect;
+KinectWrapper kinect;
 OpenCV opencv;
 KinectProjectorToolkit kpc;
 ControlP5 cp5;
@@ -21,7 +21,7 @@ void setup()
   size(1280, 720, P2D); 
 
   // setup Kinect
-  kinect = new SimpleOpenNI(this); 
+  kinect = new KinectWrapper(this); 
   kinect.enableDepth();
   kinect.enableUser();
   kinect.alternativeViewPointDepthToImage();
