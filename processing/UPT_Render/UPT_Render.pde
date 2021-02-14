@@ -58,18 +58,24 @@ void setup() {
 void setupShader(int idxShader) {
   switch (idxShader) {
     case 0: 
+      shade = loadShader("white.glsl");
+      break;
+    case 1: 
+      shade = loadShader("black.glsl");
+      break;
+    case 2: 
       shade = loadShader("blobby.glsl");
       break;
-    case 1:
+    case 3:
       shade = loadShader("drip.glsl");
       shade.set("intense", 0.5);
       shade.set("speed", 3.0);
       shade.set("c", 0.5, 1.0);
       break;
-    case 2:
+    case 4:
       shade = loadShader("waterNoise.glsl");
       break;
-    case 3: 
+    case 5: 
       shade = loadShader("waves.glsl");
       break;
   }

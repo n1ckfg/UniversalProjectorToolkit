@@ -20,8 +20,8 @@ void setupGUI()
   
   // shader selection
   cp5.addRadioButton("shader")
-      .setPosition(50, 240).setSize(40, 20).setItemsPerRow(4).setSpacingColumn(70)
-      .addItem("blob", 0).addItem("drip", 1).addItem("noise", 2).addItem("waves", 3);
+      .setPosition(50, 230).setSize(40, 20).setItemsPerRow(3).setSpacingColumn(85)
+      .addItem("fgwhite", 0).addItem("fgblack", 1).addItem("blob", 2).addItem("drip", 3).addItem("noise", 4).addItem("waves", 5);
   
   // shader selection
   cp5.addRadioButton("bground")
