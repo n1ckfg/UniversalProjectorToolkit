@@ -10,7 +10,6 @@ class KinectRealSense {
   PApplet parent;
   RealSenseCamera device;
   int vertCount = 0;
-  PVector[] depthMap;
   
   PointCloud pointCloud;
   DepthFrame depthFrame;
@@ -33,7 +32,6 @@ class KinectRealSense {
     pointCloud = new PointCloud();
     vertCount = depthWidth() * depthHeight();
     vertices = new Vertex[vertCount];
-    depthMap = new PVector[vertCount];
   }
 
   int depthWidth() {
@@ -65,17 +63,18 @@ class KinectRealSense {
   }
   
   PVector[] depthMapRealWorld() {
+    PVector[] returns = new PVector[vertCount];
     depthFrame = device.getFrames().getDepthFrame();
     points = pointCloud.calculate(depthFrame);
     vertices = points.getVertices();
-    points.release();
+    //points.release();
     
-    for (int i=0; i<depthMap.length; i++) {
+    for (int i=0; i<returns.length; i++) {
       Vertex v = vertices[i];
-      depthMap[i] = new PVector(v.getX(), v.getY(), v.getZ());
+      returns[i] = new PVector(v.getX(), v.getY(), v.getZ());
     }
 
-    return depthMap;
+    return returns;
   }
   
   int[] depthMap() {

@@ -60,12 +60,15 @@ void draw() {
 
   // update kinect and look for chessboard
   kinect.update();
-  kinect.depthMap = kinect.depthMapRealWorld();
+  //kinect.depthMap = kinect.depthMapRealWorld();
   opencv.loadImage(kinect.rgbImage());
   //opencv.loadImage(kinect.irImage());
   opencv.gray();
 
   if (isSearchingBoard) foundPoints = opencv.findChessboardCorners(4, 3);
+  if (foundPoints.size() > 0) {
+    kinect.depthMap = kinect.depthMapRealWorld();    
+  }
 
   drawGui();
 
