@@ -1,4 +1,5 @@
-class KinectWrapper extends KinectSoni {  
+//class KinectWrapper extends KinectSoni {  
+class KinectWrapper extends KinectRealSense {  
  
   PVector[] depthMap;
 

@@ -68,6 +68,8 @@ void draw() {
   if (isSearchingBoard) foundPoints = opencv.findChessboardCorners(4, 3);
 
   drawGui();
+
+  surface.setTitle("" + frameRate);
 }
 
 void drawGui() {

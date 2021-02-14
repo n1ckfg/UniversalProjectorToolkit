@@ -1,5 +1,4 @@
 import gab.opencv.*;
-import SimpleOpenNI.*;
 import KinectProjectorToolkit.*;
 import controlP5.*;
 
@@ -207,6 +206,8 @@ void draw() {
       rect(36, 24, 500, 640);
     }
   }
+  
+  surface.setTitle("" + frameRate);
 }
 
 void addNewRibbons(int t, int n) {

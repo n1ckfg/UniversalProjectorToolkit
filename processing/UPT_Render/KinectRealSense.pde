@@ -10,6 +10,8 @@ class KinectRealSense {
   PApplet parent;
   RealSenseCamera device;
   PointCloud pointCloud;
+  boolean isOffline = false;
+  PImage depthImg, contourImg;
 
   KinectRealSense(PApplet _parent) {
     parent = _parent;
@@ -100,5 +102,10 @@ class KinectRealSense {
   int[] getRawDepth() {
     return depthMap();
   }
+  
+  // dummy update methods for offline 
+  void update(String[] _depthText, PImage _depthImg, PImage _contourImg) { }
+  void update(String[] _depthText, PImage _depthImg, float _threshold) { }
+  void update(float _threshold) { }
   
 }
