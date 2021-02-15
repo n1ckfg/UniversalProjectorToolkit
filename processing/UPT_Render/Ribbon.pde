@@ -28,22 +28,22 @@ class Ribbon
   }
   
   void draw() {
-    pushStyle();
-    noFill();
-    stroke(col, map(abs(age - 0.5*maxAge), 0.5*maxAge, 0, 0, alph));
-    strokeWeight(thickness);
-    beginShape();
+    tex.pushStyle();
+    tex.noFill();
+    tex.stroke(col, map(abs(age - 0.5*maxAge), 0.5*maxAge, 0, 0, alph));
+    tex.strokeWeight(thickness);
+    tex.beginShape();
     for (int i=0; i<len; i++) {
       int idx = (pos + i * skip) % contour.size();
       float nx = map(noise(noiseFactor*idx+10), 0, 1, -margin, margin);
       float ny = map(noise(noiseFactor*idx+20), 0, 1, -margin, margin);
       PVector p = contour.get(idx);
       if (isCurved)
-        curveVertex(p.x + nx, p.y + ny);
+        tex.curveVertex(p.x + nx, p.y + ny);
       else
-        vertex(p.x + nx, p.y + ny);
+        tex.vertex(p.x + nx, p.y + ny);
     }
-    endShape();
-    popStyle();
+    tex.endShape();
+    tex.popStyle();
   }
 }

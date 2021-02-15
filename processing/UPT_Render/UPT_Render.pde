@@ -17,7 +17,8 @@ int samplingMode, idxShader, numframes, idxBg;
 
 void setup() {
   size(1280, 720, P2D); 
-
+  setupSyphon();
+  
   // setup Kinect
   kinect = new KinectWrapper(this); 
   kinect.enableDepth();
@@ -167,7 +168,8 @@ void draw() {
       bg.rect(0, 0, bg.width, bg.height);
       bg.endDraw();  
     }
-    image(bg, 0, 0);
+    tex.beginDraw();
+    tex.image(bg, 0, 0);
     
     // render bodies
     if (renderBody) {
@@ -178,13 +180,13 @@ void draw() {
         pg.endDraw();    
         
         ProjectedContour projectedContour = projectedContours.get(i);
-        beginShape();
-        texture(pg);
+        tex.beginShape();
+        tex.texture(pg);
         for (PVector p : projectedContour.getProjectedContours()) {
           PVector pt = projectedContour.getTextureCoordinate(p);
-          vertex(p.x, p.y, pg.width * pt.x, pg.height * pt.y);
+          tex.vertex(p.x, p.y, pg.width * pt.x, pg.height * pt.y);
         }
-        endShape();
+        tex.endShape();
       }
     }
     
@@ -206,7 +208,11 @@ void draw() {
       rect(36, 24, 500, 640);
     }
   }
-  
+ 
+  tex.endDraw();
+  image(tex, 0, 0);
+    
+  updateSyphon();
   surface.setTitle("" + frameRate);
 }
 
