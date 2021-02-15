@@ -20,6 +20,8 @@ void keyPressed() {
     threshold -= 5;
   } else if (key == 'd') {
     debugDraw = !debugDraw;
+  } else if (key == ' ') {
+    tex.save("render/mask_" + millis() + ".png");
   }
   
   threshold = constrain(threshold, 0, 255);
