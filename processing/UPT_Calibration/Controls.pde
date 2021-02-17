@@ -1,4 +1,4 @@
-boolean moveVertical = false;
+int moveDirection = 0;
 int moveStep = 5;
 boolean doTimestamp = false;
 
@@ -6,7 +6,8 @@ void keyPressed() {
   if (keyCode == 33) {
     addPointPair();
   } else if (keyCode == 34) {
-    moveVertical = !moveVertical;
+    moveDirection++;
+    if (moveDirection > 3) moveDirection = 0;
   }
 
   if (key == ' ') {

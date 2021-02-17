@@ -47,12 +47,23 @@ void setup() {
 
 void draw() {
   // draw chessboard onto scene
-  if (moveVertical) {
-    cy += moveStep;
-    if (cy > pHeight) cy = 0;
-  } else {
-    cx += moveStep;
-    if (cx > pWidth) cx = 0;
+  switch (moveDirection) {
+    case 0:
+      cx += moveStep;
+      if (cx > pWidth) cx = 0;
+      break;
+    case 1:
+      cy += moveStep;
+      if (cy > pHeight) cy = 0;
+      break;
+    case 2:
+      cx -= moveStep;
+      if (cx < 0) cx = pWidth;
+      break;
+    case 3:
+      cy -= moveStep;
+      if (cy < 0) cy = pHeight;
+      break;
   }
   cx = constrain(cx, 0, pWidth);
   cy = constrain(cy, 0, pHeight);
