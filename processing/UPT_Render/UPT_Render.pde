@@ -16,7 +16,8 @@ int ribbonSpawnRate, ribbonMaxAge, ribbonLength, ribbonSpeed, ribbonSkip, ribbon
 int samplingMode, idxShader, numframes, idxBg;
 
 void setup() {
-  size(1280, 720, P2D); 
+  fullScreen(P2D); 
+
   setupSyphon();
   
   // setup Kinect
@@ -205,7 +206,7 @@ void draw() {
     fill(0, 100);
     rect(36, 24, 500, 640);
 
-    if (debugDraw) {
+    if (debugDraw && kinect.isOffline) {
       pushMatrix();
       scale(1,-1);
       translate(width/2, -kinect.contourImg.height);

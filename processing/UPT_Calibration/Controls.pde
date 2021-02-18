@@ -1,5 +1,5 @@
 int moveDirection = 0;
-int moveStep = 5;
+int moveStep = 15;
 boolean doTimestamp = false;
 
 void keyPressed() {
