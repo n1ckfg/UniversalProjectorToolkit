@@ -1,5 +1,5 @@
 import ch.bildspur.realsense.*;
-
+import ch.bildspur.realsense.type.*;
 import org.intel.rs.frame.DepthFrame;
 import org.intel.rs.frame.Points;
 import org.intel.rs.processing.PointCloud;
@@ -22,7 +22,11 @@ class KinectRealSense {
     
     //device.setMirror(false);
     device.enableDepthStream();
-    //device.enableIR();
+    // https://intelrealsense.github.io/librealsense/doxygen/classrs2_1_1colorizer.html
+    // a colorizer setting is required to display depth images:
+    // 0 - Jet,  1 - Classic, 2 - WhiteToBlack, 3 - BlackToWhite, 4 - Bio, 5 - Cold, 6 - Warm, 7 - Quantized, 8 - Pattern, 9 - Hue
+    device.enableColorizer(ColorScheme.WhiteToBlack); 
+    //device.enableIRStream();
     //device.enableUser();
     device.enableColorStream();
     //device.alternativeViewPointDepthToImage();
@@ -71,7 +75,7 @@ class KinectRealSense {
     
     for (int i=0; i<returns.length; i++) {
       Vertex v = vertices[i];
-      returns[i] = new PVector(v.getX(), v.getY(), v.getZ());
+      returns[i] = new PVector(v.getX(), v.getY(), v.getZ()).mult(1000);
     }
 
     return returns;

@@ -94,7 +94,7 @@ void drawGui() {
   translate(30, 120);
   textSize(22);
   fill(255);
-  image(kinect.rgbImage(), 0, 0);
+  image(kinect.depthImage(), 0, 0); //rgbImage(), 0, 0);
   
   // draw chessboard corners, if found
   if (isSearchingBoard) {

@@ -27,6 +27,7 @@ void mousePressed() {
 void dumpDepthInfo() {
     int timestamp = millis();
     
+    PImage depthImage = kinect.depthImage();
     PVector[] depthMap = kinect.depthMapRealWorld();
     String[] depthText = new String[depthMap.length];
     for (int i=0; i<depthMap.length; i++) {
@@ -36,11 +37,11 @@ void dumpDepthInfo() {
     
     if (doTimestamp) {
       saveStrings("render/depth_map_" + timestamp + ".txt", depthText);
-      kinect.depthImage().save("render/depth_image_" + timestamp + ".png");
+      depthImage.save("render/depth_image_" + timestamp + ".png");
       //kinect.userImage().save("render/user_image_" + timestamp + ".png");
     } else {
       saveStrings("render/depth_map.txt", depthText);
-      kinect.depthImage().save(sketchPath("render/depth_image.png"));
+      depthImage.save(sketchPath("render/depth_image.png"));
       //kinect.userImage().save(sketchPath("render/user_image.png"));
     }
 }
