@@ -115,6 +115,11 @@ void drawGui() {
     }
     if (numFoundPoints == 12) {
       guiAdd.show();
+      if (armAddPointPair) {
+        addPointPair();
+        armAddPointPair = false;
+        isSearchingBoard = false;
+      }
     } else {
       guiAdd.hide();
     }

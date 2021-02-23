@@ -2,10 +2,11 @@ int moveDirection = 0;
 int moveStep = 15;
 boolean doTimestamp = false;
 boolean toggleDepthPreview = false;
-
+boolean armAddPointPair = false;
 void keyPressed() {
   if (keyCode == 33) {
-    addPointPair();
+    isSearchingBoard = true;
+    armAddPointPair = true;
   } else if (keyCode == 34) {
     moveDirection++;
     if (moveDirection > 3) moveDirection = 0;
