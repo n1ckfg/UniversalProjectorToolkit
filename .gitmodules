@@ -1,0 +1,3 @@
+[submodule "processing/KinectWrapper"]
+	path = processing/KinectWrapper
+	url = https://github.com/n1ckfg/KinectWrapper
