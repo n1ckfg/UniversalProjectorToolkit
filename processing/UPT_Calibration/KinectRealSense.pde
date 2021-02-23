@@ -68,14 +68,16 @@ class KinectRealSense {
   
   PVector[] depthMapRealWorld() {
     PVector[] returns = new PVector[vertCount];
+    
     depthFrame = device.getFrames().getDepthFrame();
     points = pointCloud.calculate(depthFrame);
     vertices = points.getVertices();
-    //points.release();
+    points.release();
     
     for (int i=0; i<returns.length; i++) {
       Vertex v = vertices[i];
-      returns[i] = new PVector(v.getX(), v.getY(), v.getZ()).mult(1000);
+      // all axes in OpenNI are flipped vs. RS, and scale is mm instead of m.
+      returns[i] = new PVector(-v.getX(), -v.getY(), -v.getZ()).mult(1000);
     }
 
     return returns;

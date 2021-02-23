@@ -1,5 +1,5 @@
 import ch.bildspur.realsense.*;
-
+import ch.bildspur.realsense.type.*;
 import org.intel.rs.frame.DepthFrame;
 import org.intel.rs.frame.Points;
 import org.intel.rs.processing.PointCloud;
@@ -9,7 +9,13 @@ class KinectRealSense {
   
   PApplet parent;
   RealSenseCamera device;
+  int vertCount = 0;
+
   PointCloud pointCloud;
+  DepthFrame depthFrame;
+  Points points;
+  Vertex[] vertices;
+  
   boolean isOffline = false;
   PImage depthImg, contourImg;
 
@@ -19,7 +25,11 @@ class KinectRealSense {
     
     //device.setMirror(false);
     device.enableDepthStream();
-    //device.enableIR();
+    // https://intelrealsense.github.io/librealsense/doxygen/classrs2_1_1colorizer.html
+    // a colorizer setting is required to display depth images:
+    // 0 - Jet,  1 - Classic, 2 - WhiteToBlack, 3 - BlackToWhite, 4 - Bio, 5 - Cold, 6 - Warm, 7 - Quantized, 8 - Pattern, 9 - Hue
+    device.enableColorizer(ColorScheme.WhiteToBlack); 
+    //device.enableIRStream();
     //device.enableUser();
     device.enableColorStream();
     //device.alternativeViewPointDepthToImage();
@@ -27,7 +37,9 @@ class KinectRealSense {
     device.start();
 
     pointCloud = new PointCloud();
-  }
+    vertCount = depthWidth() * depthHeight();
+    vertices = new Vertex[vertCount];
+}
 
   void enableDepth() {
     device.enableDepthStream();
@@ -70,17 +82,17 @@ class KinectRealSense {
   }
   
   PVector[] depthMapRealWorld() {
-    PVector[] returns;
+    PVector[] returns = new PVector[vertCount];
     
-    DepthFrame depthFrame = device.getFrames().getDepthFrame();
-    Points points = pointCloud.calculate(depthFrame);
-    Vertex[] vertices = points.getVertices();
+    depthFrame = device.getFrames().getDepthFrame();
+    points = pointCloud.calculate(depthFrame);
+    vertices = points.getVertices();
     points.release();
     
-    returns = new PVector[vertices.length];
     for (int i=0; i<returns.length; i++) {
       Vertex v = vertices[i];
-      returns[i] = new PVector(v.getX(), v.getY(), v.getZ());
+      // all axes in OpenNI are flipped vs. RS, and scale is mm instead of m.
+      returns[i] = new PVector(-v.getX(), -v.getY(), -v.getZ()).mult(1000);
     }
     
     return returns;
