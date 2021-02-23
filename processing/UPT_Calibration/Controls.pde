@@ -1,6 +1,7 @@
 int moveDirection = 0;
 int moveStep = 15;
 boolean doTimestamp = false;
+boolean toggleDepthPreview = false;
 
 void keyPressed() {
   if (keyCode == 33) {
@@ -8,6 +9,8 @@ void keyPressed() {
   } else if (keyCode == 34) {
     moveDirection++;
     if (moveDirection > 3) moveDirection = 0;
+  } else if (keyCode == TAB) {
+    toggleDepthPreview = !toggleDepthPreview;
   }
 
   if (key == ' ') {
