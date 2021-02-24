@@ -1,0 +1,3 @@
+[submodule "KinectWrapper"]
+	path = KinectWrapper
+	url = https://github.com/n1ckfg/KinectWrapper
